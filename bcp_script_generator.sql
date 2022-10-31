@@ -6,7 +6,7 @@ declare @args nvarchar(255)
 set @db_name = 'AdventureWorksDW2019'
 set @svr_name = 'DONNY-DESKTOP'
 set @filepath = 'C:\flat_files\'
-set @args = '-T -c'
+set @args = '-T -c -C 65001'
 
 select 'bcp ' + @db_name + '.' + sch.name + '.' + tbl.name + ' out ' 
   + @filepath + tbl.name + '.csv ' + '-S ' + @svr_name + ' ' + @args + ';' as bcp
