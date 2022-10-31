@@ -13,4 +13,5 @@ select 'bcp ' + @db_name + '.' + sch.name + '.' + tbl.name + ' out '
 from sys.tables as tbl
 left join sys.schemas as sch
  on sch.schema_id = tbl.schema_id
+order by tbl.name
 ;
