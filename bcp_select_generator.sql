@@ -22,7 +22,7 @@ set @svr_name = 'DONNY-DESKTOP'
 set @filepath = 'C:\flat_files\'
 set @args = '-T -c -C 65001'
 
-set @tbl = 'AdventureWorksDWBuildVersion';
+set @tbl = 'DatabaseLog';
 set @db_name = 'AdventureWorksDW2019';
 
 -- Find the last column to determine where comma should end.
@@ -31,14 +31,11 @@ with cte (TABLE_NAME, MAX_POS) as
 select TABLE_NAME, max(ORDINAL_POSITION) as MAX_POS
 from INFORMATION_SCHEMA.COLUMNS
 where TABLE_NAME = @tbl
-  and DATA_TYPE not in ('xml')
+  and (CHARACTER_MAXIMUM_LENGTH IS NULL OR CHARACTER_MAXIMUM_LENGTH <> -1)
 group by TABLE_NAME
 )
 
 select
-  --q1.section,
-  --q1.col_order,
-  --q1.script,
   @string = coalesce(@string + '' + q1.script, q1.script)
 from
 (
@@ -62,7 +59,7 @@ union
 	left join cte
 	 on col.TABLE_NAME = cte.TABLE_NAME
 	where COL.TABLE_NAME = @tbl
-	  and DATA_TYPE not in ('xml')
+	  and (CHARACTER_MAXIMUM_LENGTH IS NULL OR CHARACTER_MAXIMUM_LENGTH <> -1)
 
 union
 
@@ -88,5 +85,3 @@ union
 	order by q1.section, q1.col_order
 
 select @string as bcp_script;
-
---select CONVERT(DATETIME2(0), VersionDate) as VersionDate from [dbo].[AdventureWorksDWBuildVersion];
